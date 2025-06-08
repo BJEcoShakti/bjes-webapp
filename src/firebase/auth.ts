@@ -8,6 +8,7 @@ import {
   signOut,
 } from 'firebase/auth';
 import { firebaseAuth } from './firebaseConfig';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
@@ -15,14 +16,16 @@ const githubProvider = new GithubAuthProvider();
 // Sign in with Google functionality
 export const signInWithGoogle = async () => {
   try {
-    return setPersistence(firebaseAuth, browserSessionPersistence).then(async () => {
-      const result = await signInWithPopup(firebaseAuth, googleProvider);
-      return {
-        success: true,
-        user: result.user,
-        error: null,
-      };
-    });
+    return setPersistence(firebaseAuth, browserSessionPersistence).then(
+      async () => {
+        const result = await signInWithPopup(firebaseAuth, googleProvider);
+        return {
+          success: true,
+          user: result.user,
+          error: null,
+        };
+      }
+    );
   } catch (error: any) {
     return {
       success: false,
@@ -35,14 +38,16 @@ export const signInWithGoogle = async () => {
 // Sign in with GitHub functionality
 export const signInWithGithub = async () => {
   try {
-    return setPersistence(firebaseAuth, browserSessionPersistence).then(async () => {
-      const result = await signInWithPopup(firebaseAuth, githubProvider);
-      return {
-        success: true,
-        user: result.user,
-        error: null,
-      };
-    });
+    return setPersistence(firebaseAuth, browserSessionPersistence).then(
+      async () => {
+        const result = await signInWithPopup(firebaseAuth, githubProvider);
+        return {
+          success: true,
+          user: result.user,
+          error: null,
+        };
+      }
+    );
   } catch (error: any) {
     return {
       success: false,
@@ -55,14 +60,32 @@ export const signInWithGithub = async () => {
 // Sign in with email and password
 export async function signInWithCredentials(email: string, password: string) {
   try {
-    return setPersistence(firebaseAuth, browserSessionPersistence).then(async () => {
-      const userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
-      return {
-        success: true,
-        user: userCredential.user,
-        error: null,
-      };
-    });
+    return setPersistence(firebaseAuth, browserSessionPersistence).then(
+      async () => {
+        const userCredential = await signInWithEmailAndPassword(
+          firebaseAuth,
+          email,
+          password
+        );
+        const db = getFirestore();
+        const userDocRef = doc(db, 'roles', userCredential.user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        let userRole = '';
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          userRole = userData.name;
+          console.log('User document:', userData);
+          // You can now use userData.role, etc.
+        } else {
+          console.log('User document not found in Firestore.');
+        }
+        return {
+          success: true,
+          user: userCredential.user,
+          error: null,
+        };
+      }
+    );
   } catch (error: any) {
     return {
       success: false,
