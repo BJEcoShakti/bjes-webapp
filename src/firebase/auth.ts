@@ -7,7 +7,7 @@ import {
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
-import { firebaseAuth } from './firebaseConfig';
+import { firebaseAuth, firebaseDb } from './firebaseConfig';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const googleProvider = new GoogleAuthProvider();
@@ -67,8 +67,7 @@ export async function signInWithCredentials(email: string, password: string) {
           email,
           password
         );
-        const db = getFirestore();
-        const userDocRef = doc(db, 'roles', userCredential.user.uid);
+        const userDocRef = doc(firebaseDb, 'roles', userCredential.user.uid);
         const userDocSnap = await getDoc(userDocRef);
         let userRole = '';
         if (userDocSnap.exists()) {
