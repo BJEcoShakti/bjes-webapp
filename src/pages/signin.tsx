@@ -5,7 +5,6 @@ import { Navigate, useNavigate } from 'react-router';
 import { useSession, type Session } from '../SessionContext';
 import { signInWithGoogle, signInWithCredentials } from '../firebase/auth';
 
-
 export default function SignIn() {
   const { session, setSession, loading } = useSession();
   const navigate = useNavigate();
@@ -48,7 +47,8 @@ export default function SignIn() {
                 name: result.user.displayName || '',
                 email: result.user.email || '',
                 image: result.user.photoURL || '',
-                role: result.user.role || ''
+                role: result.user.role || '',
+                id: result.user.id || '',
               },
             };
             setSession(userSession);

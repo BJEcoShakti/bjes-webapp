@@ -4,7 +4,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Outlet } from 'react-router';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import type { Navigation, Authentication } from '@toolpad/core/AppProvider';
-import { firebaseSignOut, onAuthStateChanged } from './firebase/auth';
+import { firebaseSignOut, getUserRole, onAuthStateChanged } from './firebase/auth';
 import SessionContext, { type Session } from './SessionContext';
 
 const NAVIGATION: Navigation = [
@@ -47,14 +47,15 @@ export default function App() {
   );
 
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(async (user) => {
       if (user) {
+        const role = await getUserRole(user.uid);
         setSession({
           user: {
             name: user.name || '',
             email: user.email || '',
             image: user.image || '',
-            role: user.role || ''
+            role
           },
         });
       } else {

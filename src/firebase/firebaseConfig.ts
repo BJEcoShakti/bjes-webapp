@@ -1,13 +1,14 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { connectAuthEmulator, getAuth } from 'firebase/auth';
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 
 const requiredEnvVars = {
   VITE_FIREBASE_API_KEY: import.meta.env.VITE_FIREBASE_API_KEY,
   VITE_FIREBASE_AUTH_DOMAIN: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   VITE_FIREBASE_PROJECT_ID: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   VITE_FIREBASE_STORAGE_BUCKET: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  VITE_FIREBASE_MESSAGE_SENDER_ID: import.meta.env.VITE_FIREBASE_MESSAGE_SENDER_ID,
+  VITE_FIREBASE_MESSAGE_SENDER_ID: import.meta.env
+    .VITE_FIREBASE_MESSAGE_SENDER_ID,
   VITE_FIREBASE_APP_ID: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
@@ -28,5 +29,10 @@ const app = initializeApp({
 });
 
 export const firebaseAuth = getAuth(app);
+
+connectAuthEmulator(firebaseAuth, 'http://localhost:9099');
+
 export const firebaseDb = getFirestore(app);
+connectFirestoreEmulator(firebaseDb, 'localhost', 8080);
+
 export default app;

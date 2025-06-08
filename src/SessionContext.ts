@@ -6,6 +6,7 @@ export interface Session {
     email?: string;
     image?: string;
     role?: string;
+    id?: string;
   };
 }
 

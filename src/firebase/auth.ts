@@ -67,14 +67,14 @@ export async function signInWithCredentials(email: string, password: string) {
           email,
           password
         );
-        const userDocRef = doc(firebaseDb, 'roles', userCredential.user.uid);
-        const userDocSnap = await getDoc(userDocRef);
-
+        const role = await getUserRole(userCredential.user.uid); 
         return {
           success: true,
-          user: userCredential.user,
+          user: {
+            ...userCredential.user,
+            role,
+          },
           error: null,
-          role: userDocSnap.exists() ? userDocSnap.data().name : 'guest'
         };
       }
     );
@@ -87,6 +87,12 @@ export async function signInWithCredentials(email: string, password: string) {
   }
 }
 
+export const getUserRole = async (id: string) => {
+  const userDocRef = doc(firebaseDb, 'roles', id);
+  const userDocSnap = await getDoc(userDocRef);
+
+  return userDocSnap.exists() ? userDocSnap.data().name : 'guest';
+};
 // Sign out functionality
 export const firebaseSignOut = async () => {
   try {
@@ -102,5 +108,6 @@ export const firebaseSignOut = async () => {
 
 // Auth state observer
 export const onAuthStateChanged = (callback: (user: any) => void) => {
+  console.log('onAuthStateChanged');
   return firebaseAuth.onAuthStateChanged(callback);
 };
