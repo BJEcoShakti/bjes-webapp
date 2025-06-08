@@ -69,19 +69,12 @@ export async function signInWithCredentials(email: string, password: string) {
         );
         const userDocRef = doc(firebaseDb, 'roles', userCredential.user.uid);
         const userDocSnap = await getDoc(userDocRef);
-        let userRole = '';
-        if (userDocSnap.exists()) {
-          const userData = userDocSnap.data();
-          userRole = userData.name;
-          console.log('User document:', userData);
-          // You can now use userData.role, etc.
-        } else {
-          console.log('User document not found in Firestore.');
-        }
+
         return {
           success: true,
           user: userCredential.user,
           error: null,
+          role: userDocSnap.exists() ? userDocSnap.data().name : 'guest'
         };
       }
     );

@@ -47,7 +47,8 @@ export default function SignIn() {
               user: {
                 name: result.user.displayName || '',
                 email: result.user.email || '',
-                image: result.user.photoURL || ''
+                image: result.user.photoURL || '',
+                role: result.user.role || ''
               },
             };
             setSession(userSession);
