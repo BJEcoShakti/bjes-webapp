@@ -8,8 +8,6 @@ import { useSession, type Session } from '../SessionContext';
 import { signInWithGoogle, signInWithCredentials } from '../firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
-const db = getFirestore();
-
 export default function SignIn() {
   const { session, setSession, loading } = useSession();
   const navigate = useNavigate();
@@ -47,7 +45,7 @@ export default function SignIn() {
           }
 
           if (result?.success && result?.user) {
-            const userDocRef = doc(db, 'roles', result.user.uid);
+            const userDocRef = doc(getFirestore(), 'roles', result.user.uid);
             const userDocSnap = await getDoc(userDocRef);
             let userRole = '';
             if (userDocSnap.exists()) {
