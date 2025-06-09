@@ -6,7 +6,8 @@
     "preview": "vite preview",
     "build": "vite build",
     "ci": "yarn build",
-    "preci": "yarn"
+    "preci": "yarn && cd ./functions/webhooks && yarn",
+    "postci": "cd ./functions/webhooks && yarn build"
   },
   "dependencies": {
     "@emotion/react": "^11",
